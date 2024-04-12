@@ -16,7 +16,7 @@ dotenv.config();
 app.use(bodyParser.json());
 
 // port environment
-const PORT = process.env.PORT || 3000;
+let port = process.env.PORT || 3000;
 
 
 // routes
@@ -28,6 +28,6 @@ app.get("/", function (req, res) {
   res.send("Hello Welcome to our Restaurant");
 });
 
-app.listen(3000, () => {
-  console.log(`listening to port ${PORT}`);
+app.listen(port,()=>{
+  console.log(`Server is listening to ${port}`);
 });
