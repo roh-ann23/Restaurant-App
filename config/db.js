@@ -1,7 +1,7 @@
 
 import  mongoose  from "mongoose";
-
-// const MONGO_URL =
+import dotenv from "dotenv";
+dotenv.config();
 
 
 // Set Up mongoDB connection

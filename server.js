@@ -15,23 +15,19 @@ dotenv.config();
 // bodyParser.urlencoded({ extended: true });
 app.use(bodyParser.json());
 
+// port environment
+const PORT = process.env.PORT || 3000;
+
+
 // routes
 app.use('/person',personRoutes);
 app.use('/menu',menuRoutes);
 
-
-
-
-
-
-
-
 // initial route
 app.get("/", function (req, res) {
-  res.send("Hello World");
+  res.send("Hello Welcome to our Restaurant");
 });
 
-
 app.listen(3000, () => {
-  console.log(`listening to port 3000`);
+  console.log(`listening to port ${PORT}`);
 });
