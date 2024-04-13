@@ -88,4 +88,9 @@ The Person data model represents information about staff members in the hotel.
 }
 ```
 ## Usage
+
+### Install Dependencies:
+
+```bash
 npm install
+
