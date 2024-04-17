@@ -30,7 +30,7 @@ export const postMenu = async (req,res) =>{
 try {
   const data = await MenuItem.find();
   console.log('Menu Fetched');
-  res.status(200).send(data);
+  res.status(200).send({message:"Fetched all menu's!"},data);
 } catch (error) {
   console.log(error);
 

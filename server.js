@@ -9,6 +9,28 @@ import menuRoutes from "./features/routes/menu.routes.js"
 // passport 
 import passport from "./features/middleware/auth.js";
 
+// swagger
+import swaggerDoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
+
+// swagger configure
+
+const options = {
+  definition: {
+    openapi: "3.1.0",
+    info: {
+      title: "Restaurant Application",
+      description: "Node and ExpressJs Project as Restaurant Aplication",
+    },
+    servers: [
+      {
+        url: "http//:localhost:3000",
+      },
+    ],
+  },
+  apis: ["./features/routes/*.js"],
+};
+const specs = swaggerDoc(options);
 
 const app = express();
 
@@ -30,6 +52,9 @@ const localAuthMiddleware = passport.authenticate('local',{session:false});
 // routes
 app.use('/person',personRoutes);
 app.use('/menu',menuRoutes); // here we added that authentication middleware
+
+// home route .. swagger route
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 // initial route
 app.get("/",function (req, res) {

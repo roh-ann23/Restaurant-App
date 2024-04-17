@@ -23,7 +23,7 @@ export const postPerson =  async (req,res) => {
       const token = generateToken(payload); // paylaod varun apn takon create krt ahe
       console.log(token); // to print token on console
       
-      res.status(201).json({response: response,token: token});
+      res.status(201).json({message: "SignUp Succesffully done!", response: response,token: token});
     } catch (error) {
       console.log(error);
       res.status(500).json({error:'Internal Server Error'})
@@ -58,30 +58,30 @@ export const postPerson =  async (req,res) => {
 
   // get profile of person
 
-  export const getProfile = async(req,res)=>{
-    try {
-      const userData = req.user;
-      console.log(userData);
+  // export const getProfile = async(req,res)=>{
+  //   try {
+  //     const userData = req.user;
+  //     console.log(userData);
 
-    const userId =userData.id;
-    console.log(userId);
-    const user = await Person.findById(userId);
+  //   const userId =userData.id;
+  //   console.log(userId);
+  //   const user = await Person.findById(userId);
 
-    console.log(user);
-    res.status(200).json(user);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({error:'Internal Server Error'})
-    }
+  //   console.log(user);
+  //   res.status(200).json(user);
+  //   } catch (error) {
+  //     console.log(error);
+  //     res.status(500).json({error:'Internal Server Error'})
+  //   }
     
-  }
+  // }
 
   // get the person
 export const getPerson =  async (req,res) => {
     try {
       const data = await Person.find();
       console.log("Data Fetched");
-      res.status(201).json(data);
+      res.status(201).json({message:"Fetched All Person"},data);
   
     } catch (error) {
       console.log(error);
@@ -105,7 +105,7 @@ export const getPerson =  async (req,res) => {
 
       // const data = await Person.find();
       console.log("Data Fetched");
-      res.status(201).json(data);
+      res.status(201).json({message: "Person find Successfully!"},data);
     } else {
       console.log(error);
       res.status(400).json({ error: "Invalid Work Type" });
@@ -117,8 +117,8 @@ export const getPerson =  async (req,res) => {
 };
 
 /**
-  *  Get / Person
-  * /person/:work
+  *  PUT / Person
+  * /person/ update person
   */
 
 export const updatePersonById = async (req,res) =>{
@@ -134,7 +134,7 @@ export const updatePersonById = async (req,res) =>{
       return res.status(404).json({error:'Person not found'})
     }
     console.log('Data Updated');
-    res.status(200).json(updatedPerson)
+    res.status(200).json({message:"Updated Successfully Done!"},updatedPerson)
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
