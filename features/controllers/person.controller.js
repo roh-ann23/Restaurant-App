@@ -60,7 +60,7 @@ export const postPerson =  async (req,res) => {
 
   // export const getProfile = async(req,res)=>{
   //   try {
-  //     const userData = req.user;
+  //     const userData = req.user.userData;
   //     console.log(userData);
 
   //   const userId =userData.id;

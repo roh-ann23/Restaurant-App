@@ -1,7 +1,7 @@
 
 import express from 'express';
 import { getMenu,postMenu,menuByTaste,updateMenuById,deleteMenuById }from '../controllers/menu.controller.js'
-
+import { jwtAuthMiddleware } from '../middleware/jwt.js';
 const router = express.Router();
 
 /**
@@ -97,6 +97,8 @@ router.get('/',getMenu);
  *   post:
  *     summary: Create a new menu item
  *     tags: [Menu]
+ *     security:
+ *       - jwtAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -110,14 +112,25 @@ router.get('/',getMenu);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/MenuItem'
+ *       401:
+ *         description: Unauthorized. JWT token is missing or invalid.
  *       400:
  *         description: Bad request. The request payload is invalid.
  *       500:
  *         description: Internal server error. Something went wrong on the server side.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message indicating internal server error
  */
 
 
-router.post('/',postMenu);
+
+router.post('/', jwtAuthMiddleware, postMenu);
 
 // menu by taste
 
@@ -131,9 +144,11 @@ router.post('/',postMenu);
  *       - in: path
  *         name: tasteType
  *         required: true
- *         description: The taste type of menu items to retrieve (sour, sweet, or spicy)
+ *         description: The taste type of menu items to retrieve
  *         schema:
  *           type: string
+ *     security:
+ *       - jwtAuth: []
  *     responses:
  *       200:
  *         description: Menu items fetched successfully
@@ -141,19 +156,28 @@ router.post('/',postMenu);
  *           application/json:
  *             schema:
  *               type: array
+ *               description: An array containing menu items with the specified taste type
  *               items:
  *                 $ref: '#/components/schemas/MenuItem'
- *       400:
- *         description: Bad request. The taste type provided is invalid.
- *       404:
- *         description: No menu items found for the provided taste type.
+ *       401:
+ *         description: Unauthorized. JWT token is missing or invalid.
  *       500:
  *         description: Internal server error. Something went wrong on the server side.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message indicating internal server error
  */
 
-router.get('/:tasteType',menuByTaste)
+
+router.get('/:tasteType', jwtAuthMiddleware, menuByTaste)
 
 // Updated by Id
+
 /**
  * @swagger
  * /menu/:id:
@@ -167,6 +191,8 @@ router.get('/:tasteType',menuByTaste)
  *         description: The ID of the menu item to update
  *         schema:
  *           type: string
+ *     security:
+ *       - jwtAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -180,17 +206,27 @@ router.get('/:tasteType',menuByTaste)
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/MenuItem'
- *       400:
- *         description: Bad request. The request payload is invalid.
+ *       401:
+ *         description: Unauthorized. JWT token is missing or invalid.
  *       404:
  *         description: Menu item not found for the provided ID.
  *       500:
  *         description: Internal server error. Something went wrong on the server side.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message indicating internal server error
  */
 
-router.put('/:id',updateMenuById)
+
+router.put('/:id', jwtAuthMiddleware, updateMenuById)
 
 // Delete by Id
+
 /**
  * @swagger
  * /menu/:id:
@@ -204,15 +240,28 @@ router.put('/:id',updateMenuById)
  *         description: The ID of the menu item to delete
  *         schema:
  *           type: string
+ *     security:
+ *       - jwtAuth: []
  *     responses:
  *       204:
  *         description: Menu item deleted successfully
+ *       401:
+ *         description: Unauthorized. JWT token is missing or invalid.
  *       404:
  *         description: Menu item not found for the provided ID.
  *       500:
  *         description: Internal server error. Something went wrong on the server side.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message indicating internal server error
  */
 
-router.delete('/:id',deleteMenuById)
+
+router.delete('/:id', jwtAuthMiddleware, deleteMenuById)
 
 export default router;

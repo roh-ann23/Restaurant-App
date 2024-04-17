@@ -77,87 +77,128 @@ const router = express.Router();
  *    description: Person apis
  */
 
-
 /**
  * @swagger
  * /person/signup:
- *    post:
- *      summary: signup person
- *      tags: [Auth]
- *      requestBody:
+ *   post:
+ *     summary: Register a new person
+ *     tags: [Authentication]
+ *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/Person'
- *      responses:
- *        201:
- *          description: SignUp Succesffully done!
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Person'
- *        500:
- *          description: internal serevr error
- * 
- * 
- * 
+ *     responses:
+ *       201:
+ *         description: Person registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Person'
+ *       400:
+ *         description: Bad request. The request payload is invalid.
+ *       500:
+ *         description: Internal server error. Something went wrong on the server side.
  */
+
 router.post("/signup", postPerson);
 
 /**
  * @swagger
  * /person/login:
- *    post:
- *      summary: signin person
- *      tags: [Auth]
- *      requestBody:
+ *   post:
+ *     summary: Log in a person
+ *     tags: [Authentication]
+ *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Person'
- *      responses:
- *        200:
- *          description: Login Successylly!
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Person'
- *        500:
- *          description: internal serevr error
- * 
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: The username of the person
+ *               password:
+ *                 type: string
+ *                 description: The password of the person
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: A message indicating the success of the login
+ *                 token:
+ *                   type: string
+ *                   description: A token to authenticate subsequent requests
+ *       401:
+ *         description: Unauthorized. Invalid username or password provided.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message indicating invalid credentials
+ *       500:
+ *         description: Internal server error. Something went wrong on the server side.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message indicating internal server error
  */
+
 
 router.post("/login", loginPerson);
 
 //  profile
 // router.get("/profile",jwtAuthMiddleware, getProfile)
 
-
 /**
  * @swagger
- * /person/:
- *    get:
- *      summary: Get all Persons
- *      tags: [Person]
- *      requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Person'
- *      responses:
- *        200:
- *          description: Fetched All Person
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Person'
- *        500:
- *          description: internal serevr error
- * 
+ * /person:
+ *   get:
+ *     summary: Get all persons
+ *     tags: [Persons]
+ *     responses:
+ *       200:
+ *         description: Persons fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: A message indicating the success of fetching persons
+ *                 data:
+ *                   type: array
+ *                   description: An array containing all persons
+ *                   items:
+ *                     $ref: '#/components/schemas/Person'
+ *       500:
+ *         description: Internal server error. Something went wrong on the server side.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message indicating internal server error
  */
+
 
 
 // main routes
@@ -166,80 +207,129 @@ router.get("/", getPerson);
 /**
  * @swagger
  * /person/:workType:
- *    get:
- *      summary: This endpoint is for find a person by their worktype in the system.
- *      tags: [Person]
- *      requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Person'
- *      responses:
- *        200:
- *          description: Person find Successfully!
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Person'
- *        500:
- *          description: internal serevr error
+ *   get:
+ *     summary: Get persons by work type
+ *     tags: [Persons]
+ *     parameters:
+ *       - in: path
+ *         name: workType
+ *         required: true
+ *         description: The work type of persons to retrieve
+ *         schema:
+ *           type: string
+ *     security:
+ *       - jwtAuth: []
+ *     responses:
+ *       200:
+ *         description: Persons fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               description: An array containing persons with the specified work type
+ *               items:
+ *                 $ref: '#/components/schemas/Person'
+ *       401:
+ *         description: Unauthorized. JWT token is missing or invalid.
+ *       500:
+ *         description: Internal server error. Something went wrong on the server side.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message indicating internal server error
  */
-
-
-
 
 // Person By WorkType
 router.get("/:workType", jwtAuthMiddleware, personByWorkType);
 
+
 /**
  * @swagger
- * /person/:id:
- *    put:
- *      summary: This endpoint is for updating a person in the system.
- *      tags: [Person]
- *      requestBody:
+ * /person/:id :
+ *   put:
+ *     summary: Update a person by ID
+ *     tags: [Persons]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the person to update
+ *         schema:
+ *           type: string
+ *     security:
+ *       - jwtAuth: []
+ *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/Person'
- *      responses:
- *        200:
- *          description: Updated Successfully Done!
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Person'
- *        500:
- *          description: internal serevr error
+ *     responses:
+ *       200:
+ *         description: Person updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Person'
+ *       401:
+ *         description: Unauthorized. JWT token is missing or invalid.
+ *       404:
+ *         description: Person not found for the provided ID.
+ *       500:
+ *         description: Internal server error. Something went wrong on the server side.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message indicating internal server error
  */
 
 // Updated by Id
 router.put("/:id",jwtAuthMiddleware, updatePersonById);
 
+
+
 /**
  * @swagger
  * /person/:id:
- *    delete:
- *      summary: This endpoint is for deleting a person in the system.
- *      tags: [Person]
- *      requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Person'
- *      responses:
- *        200:
- *          description: Person Delete SuccessFully!
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Person'
- *        500:
- *          description: internal serevr error
+ *   delete:
+ *     summary: Delete a person by ID
+ *     tags: [Persons]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the person to delete
+ *         schema:
+ *           type: string
+ *     security:
+ *       - jwtAuth: []
+ *     responses:
+ *       204:
+ *         description: Person deleted successfully
+ *       401:
+ *         description: Unauthorized. JWT token is missing or invalid.
+ *       404:
+ *         description: Person not found for the provided ID.
+ *       500:
+ *         description: Internal server error. Something went wrong on the server side.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message indicating internal server error
  */
+
 
 // Delete by Id
 router.delete("/:id",jwtAuthMiddleware, deletePersonById);

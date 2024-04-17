@@ -41,7 +41,7 @@ dotenv.config();
 app.use(bodyParser.json());
 
 // port environment
-let port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 // passport confi
 app.use(passport.initialize());
@@ -62,5 +62,5 @@ app.get("/",function (req, res) {
 });
 
 app.listen(3000,()=>{
-  console.log(`Server is listening to ${port}`);
+  console.log(`Server is listening to ${PORT}`);
 });
